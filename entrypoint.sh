@@ -3,7 +3,7 @@ set -e
 
 WWW_ROOT=/var/www/html
 
-export POWERADMIN_SESSION_KEY=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;)
+export POWERADMIN_SESSION_KEY=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c ${1:-32}; echo;)
 
 function update_env_conf () {
     
@@ -73,5 +73,8 @@ then
     echo "$(date '+%b %d %Y %H:%M:%S') entrypoint:[ERROR] Failed to create poweradmin tables in database."
     exit 1
 fi
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /var/run/apache2/apache2.pid
 
 exec apache2ctl -D FOREGROUND
